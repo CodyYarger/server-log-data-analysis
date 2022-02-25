@@ -23,17 +23,20 @@ def get_log_data_list(file):
 
 def get_addr_map_df(file):
     """
-        converts map csv file to pandas df object
+        converts map csv file to pandas df object. used by log_to_frame to map
+        geo location to respective series
     """
     addr_map = pd.read_csv(file)
     return addr_map
 
 
 def log_to_frame(log_list, df_map):
-
+    """
+        builds dataframe object from log file list and csv map of geo locations
+    """
     # empty dataframe
     cols = ['ip', 'host', 'latitude', 'longitude', 'date', 'time', 'timezone']
-    log_info = pd.DataFrame(columns=cols)
+    log_df = pd.DataFrame(columns=cols)
 
     # regex for ip  and timestamp
     reg_ip = r'(\d+[.]\d+[.]\d+[.]\d+)'
@@ -42,8 +45,6 @@ def log_to_frame(log_list, df_map):
     for index, row in enumerate(log_list):
         # ip address = first instance of ip_reg found in string
         ipaddr = re.search(reg_ip, row).group()
-        # print("This is the ip address")
-        # print(ipaddr)
 
         # get time stamp
         date, time, timezone = re.search(reg_timestamp, log_list[index]).groups()
@@ -51,17 +52,24 @@ def log_to_frame(log_list, df_map):
         # get series for ipaddr and convert to list
         try:
             map = (df_map.loc[df_map['ip'] == ipaddr]).values.tolist()
-            # print(map_list)
         except KeyError:
             print("No key in dataframe")
 
+        # unpack mapped data
         host, lat, long = map[0][1], map[0][2], map[0][3]
 
+        # dictionary map
         d = {'ip': ipaddr, 'host': host, 'latitude': lat, 'longitude': long,
              'date': date, 'time': time, 'timezone': timezone}
 
         seriestest = pd.Series(
-            data=d, index=['ip', 'host', 'latitude', 'longitude', 'date', 'time', 'timezone'])
+            data=d, index=['ip',
+                           'host',
+                           'latitude',
+                           'longitude',
+                           'date',
+                           'time',
+                           'timezone'])
 
         ser_final = pd.Series(data=d, index=['ip',
                                              'host',
@@ -71,5 +79,5 @@ def log_to_frame(log_list, df_map):
                                              'time',
                                              'timezone'])
 
-        log_info = log_info.append(ser_final, ignore_index=True)
-    print(log_info)
+        log_df = log_df.append(ser_final, ignore_index=True)
+    return log_df
