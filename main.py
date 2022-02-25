@@ -10,45 +10,25 @@ server traffic. URLs are extracted from the file and patterns are identified
 # import numpy as np
 # import pandas as pd
 # import re
-import log_to_pandas as topan
+import os
+import log_to_pandas as lp
 
 
 def main():
-    # open file and define list data set to collect file lines
-    with open('small.log', 'r') as logs:
-        log_list = []
 
-        # read log data file
-        for line in logs:
-            log_list.append(line)
+    # current working directory and log file to process
+    path = os.getcwd()
+    f_log = 'small.log'
+    f_csv = 'addrs.csv'
 
-    first = log_list[0]
-    print(first)
+    # get log list
+    log_list = lp.get_log_data_list(path + '/' + f_log)
+    # get address map datafram from csv file
+    df_map = lp.get_addr_map_df(path + '/' + f_csv)
 
-    # ---------------------------------------------------------------------------
-    # get ip address and time stamp from log file.
-
-    # # regex for ip addresses: series of digits "d" and character sets "[]""
-    # reg_ip = r'(\d+[.]\d+[.]\d+[.]\d+)'
-    # # ip address = first instance of ip_reg found in string
-    # ipaddr = re.search(reg_ip, first).group(1)
-    # print(ipaddr)
-    #
-    # # regex for time stamp
-    # reg_timestamp = r'\[(\d+\/\w+\/\d+):(\d+:\d+:\d+).(-\d+)]'
-    # date, time, timezone = re.search(reg_timestamp, first).groups()
-    # # print(date)
-    # print(f'date: {date}, time: {time}, timezone: {timezone}')
-
-    # dataframe for map data in local file
-    addr_map = pd.read_csv(
-        '/home/cody/Desktop/PYTHON/Python_Projects/log_file_data_analysis/addrs.csv')
-    print(addr_map)
-
-    # dataframe for axis0 containing ipaddr
-    df_new = addr_map[addr_map['ip'] == ipaddr]
-
-    print(df_new)
+    # get dataframe of log file with mapped geo location
+    df_lf = lp.log_to_frame(log_list, df_map)
+    print(df_lf)
 
 
 if __name__ == "__main__":

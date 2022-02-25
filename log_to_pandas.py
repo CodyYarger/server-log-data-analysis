@@ -7,41 +7,69 @@ import pandas as pd
 import re
 
 
-def _get_log_data(file):
+def get_log_data_list(file):
     """
         reads log files and stores lines in log_list
     """
+    log_list = []
+
     # open file and define list data set to collect file lines
     with open(file, 'r') as logs:
-        log_list = []
-
         # append lines in log file to log_listead log data file
         for line in logs:
             log_list.append(line)
-
     return log_list
 
 
-def log_engtry_to_series(file, line):
+def get_addr_map_df(file):
     """
-        converts log entries to pandas series object
+        converts map csv file to pandas df object
     """
+    addr_map = pd.read_csv(file)
+    return addr_map
 
-    # get list of log file lines
-    log_list = _get_log_data(file)
 
-    # regex for ip addresses: series of digits "d" and character sets "[]""
-    reg_ip = r'(\d+[.]\d+[.]\d+[.]\d+)'
-    # ip address = first instance of ip_reg found in string
-    ipaddr = re.search(reg_ip, first).groups()
-    print(ipaddr)
+def log_to_frame(log_list, df_map):
 
-    # regex for time stamp
-    reg_timestamp = r'\[(\d+\/\w+\/\d+):(\d+:\d+:\d+).(-\d+)]'
-    date, time, timezone = re.search(reg_timestamp, first).groups()
-    print(f'date: {date}, time: {time}, timezone: {timezone}')
-
-    # datafram index
+    # empty dataframe
     cols = ['ip', 'host', 'latitude', 'longitude', 'date', 'time', 'timezone']
+    log_info = pd.DataFrame(columns=cols)
 
-    log_series = pd.series()
+    # regex for ip  and timestamp
+    reg_ip = r'(\d+[.]\d+[.]\d+[.]\d+)'
+    reg_timestamp = r'\[(\d+\/\w+\/\d+):(\d+:\d+:\d+).(-\d+)]'
+
+    for index, row in enumerate(log_list):
+        # ip address = first instance of ip_reg found in string
+        ipaddr = re.search(reg_ip, row).group()
+        # print("This is the ip address")
+        # print(ipaddr)
+
+        # get time stamp
+        date, time, timezone = re.search(reg_timestamp, log_list[index]).groups()
+
+        # get series for ipaddr and convert to list
+        try:
+            map = (df_map.loc[df_map['ip'] == ipaddr]).values.tolist()
+            # print(map_list)
+        except KeyError:
+            print("No key in dataframe")
+
+        host, lat, long = map[0][1], map[0][2], map[0][3]
+
+        d = {'ip': ipaddr, 'host': host, 'latitude': lat, 'longitude': long,
+             'date': date, 'time': time, 'timezone': timezone}
+
+        seriestest = pd.Series(
+            data=d, index=['ip', 'host', 'latitude', 'longitude', 'date', 'time', 'timezone'])
+
+        ser_final = pd.Series(data=d, index=['ip',
+                                             'host',
+                                             'latitude',
+                                             'longitude',
+                                             'date',
+                                             'time',
+                                             'timezone'])
+
+        log_info = log_info.append(ser_final, ignore_index=True)
+    print(log_info)
