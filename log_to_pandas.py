@@ -58,19 +58,16 @@ def log_to_frame(log_list, df_map):
         # unpack mapped data
         host, lat, long = map[0][1], map[0][2], map[0][3]
 
-        # dictionary map
-        d = {'ip': ipaddr, 'host': host, 'latitude': lat, 'longitude': long,
-             'date': date, 'time': time, 'timezone': timezone}
+        # axis map
+        d = {'ip': ipaddr,
+             'host': host,
+             'latitude': lat,
+             'longitude': long,
+             'date': date,
+             'time': time,
+             'timezone': timezone}
 
-        seriestest = pd.Series(
-            data=d, index=['ip',
-                           'host',
-                           'latitude',
-                           'longitude',
-                           'date',
-                           'time',
-                           'timezone'])
-
+        # create series for row and map data
         ser_final = pd.Series(data=d, index=['ip',
                                              'host',
                                              'latitude',
@@ -79,5 +76,7 @@ def log_to_frame(log_list, df_map):
                                              'time',
                                              'timezone'])
 
+        # append series to dataframe
         log_df = log_df.append(ser_final, ignore_index=True)
+
     return log_df
