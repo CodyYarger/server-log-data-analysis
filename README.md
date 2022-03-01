@@ -12,7 +12,7 @@ A preview of the server log data is presented in Table-1. Server traffic as a fu
 
 <div align="center">Table 1: Server Traffic DataFrame Preview</div>
 <center>
-<table border="1" class="dataframe">
+<table border="1" class="dataframe" align="center">
 <thead>
   <tr style="text-align: center;">
     <th></th>
