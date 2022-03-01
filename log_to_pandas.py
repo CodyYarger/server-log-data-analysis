@@ -38,7 +38,7 @@ def log_to_frame(log_list, df_map):
     cols = ['ip', 'host', 'latitude', 'longitude', 'date', 'time', 'timezone']
     log_df = pd.DataFrame(columns=cols)
 
-    # regex for ip  and timestamp
+    # regex for ip and timestamp
     reg_ip = r'(\d+[.]\d+[.]\d+[.]\d+)'
     reg_timestamp = r'\[(\d+\/\w+\/\d+):(\d+:\d+:\d+).(-\d+)]'
 
