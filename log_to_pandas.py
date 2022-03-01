@@ -2,9 +2,9 @@
 Module for log-file to pandas objects functions
 """
 
-import numpy as np
-import pandas as pd
+# pylint: disable=R0914
 import re
+import pandas as pd
 
 
 def get_log_data_list(file):
@@ -14,7 +14,7 @@ def get_log_data_list(file):
     log_list = []
 
     # open file and define list data set to collect file lines
-    with open(file, 'r') as logs:
+    with open(file, 'r', encoding="utf-8") as logs:
         # append lines in log file to log_listead log data file
         for line in logs:
             log_list.append(line)
@@ -51,30 +51,30 @@ def log_to_frame(log_list, df_map):
 
         # get series for ipaddr and convert to list
         try:
-            map = (df_map.loc[df_map['ip'] == ipaddr]).values.tolist()
+            maper = (df_map.loc[df_map['ip'] == ipaddr]).values.tolist()
         except KeyError:
             print("No key in dataframe")
 
         # unpack mapped data
-        host, lat, long = map[0][1], map[0][2], map[0][3]
+        host, lat, long = maper[0][1], maper[0][2], maper[0][3]
 
         # axis map
-        d = {'ip': ipaddr,
-             'host': host,
-             'latitude': lat,
-             'longitude': long,
-             'date': date,
-             'time': time,
-             'timezone': timezone}
+        axis_map = {'ip': ipaddr,
+                    'host': host,
+                    'latitude': lat,
+                    'longitude': long,
+                    'date': date,
+                    'time': time,
+                    'timezone': timezone}
 
         # create series for row and map data
-        ser_final = pd.Series(data=d, index=['ip',
-                                             'host',
-                                             'latitude',
-                                             'longitude',
-                                             'date',
-                                             'time',
-                                             'timezone'])
+        ser_final = pd.Series(data=axis_map, index=['ip',
+                                                    'host',
+                                                    'latitude',
+                                                    'longitude',
+                                                    'date',
+                                                    'time',
+                                                    'timezone'])
 
         # append series to dataframe
         log_df = log_df.append(ser_final, ignore_index=True)

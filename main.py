@@ -7,33 +7,34 @@ This module uses the Pandas and NumPy libraries to analyze a log file contaning
 server traffic. URLs are extracted from the file and patterns are identified
 """
 
+
+# pylint: disable=C0301
 import os
-import pandas as pd
 import matplotlib.pyplot as plt
 import log_to_pandas as lp
-from matplotlib.pyplot import hist
-import numpy as np
 
 
 def main():
-
+    """ main """
     # current working directory and files to process
-    path = os.getcwd()
+    local_path = os.getcwd()
     f_log = 'medium.log'
     # f_log = 'small.log'
     f_csv = 'addrs.csv'
 
+    # ==========================================================================
     # Get dataframe of log file and geographic map =============================
     # get log list
-    log_list = lp.get_log_data_list(path + '/' + f_log)
+    log_list = lp.get_log_data_list(os.path.join(local_path, f_log))
 
     # get address map datafram from csv file
-    df_map = lp.get_addr_map_df(path + '/' + f_csv)
+    df_map = lp.get_addr_map_df(os.path.join(local_path, f_csv))
 
     # get dataframe of log file with mapped geo location
     df_logf = lp.log_to_frame(log_list, df_map)
     print(df_logf)
 
+    # ==========================================================================
     # Data analysis block ======================================================
     # dataframe for occurence of ip address in descending order
     top = df_logf['ip'].value_counts(ascending=False).reset_index()
@@ -60,21 +61,19 @@ def main():
     # replace string hour data with integer hour data using map
     top_hour['time'] = top_hour['time'].map(hour_map)
 
+    # ==========================================================================
     # Histogram for occurance of server traffic ================================
     top_hour.hist(bins=24, grid=True, color="yellow", ec="black")
     plt.xticks(fontsize=10, rotation=45, )
     plt.yticks(fontsize=10)
     plt.xlabel('Hour', fontsize=10, fontweight="bold")
     plt.ylabel('Server Traffic', fontsize=10, fontweight="bold")
-    plt.title('User Server Traffic Distribution', fontsize=14, fontweight="bold")
-    # ==========================================================================
+    plt.title('Server Traffic Distribution', fontsize=14, fontweight="bold")
 
     # add count column sorted descending add new (reset) index and rename columns
     top_hour = top_hour['time'].value_counts(ascending=False).reset_index()
     top_hour.set_axis(['hour', 'count'], axis=1, inplace=True)
-
     print(top_hour.head())
-    print(type(top_hour))
 
     # Bar Graph for Occurence of Server Traffic  ===============================
     top_hour.sort_values(by=['hour'], inplace=True)
@@ -83,8 +82,8 @@ def main():
     plt.xlabel('Hour', fontsize=10, fontweight="bold")
     plt.ylabel('Server Traffic', fontsize=10, fontweight="bold")
     plt.title('User Traffic vs Hour of Day', fontsize=14, fontweight="bold")
-    # ==========================================================================
     plt.show()
+    # ==========================================================================
 
 
 if __name__ == "__main__":
