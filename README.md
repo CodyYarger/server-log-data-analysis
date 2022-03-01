@@ -8,7 +8,7 @@ The sample.log and map.csv files are consumed by the log_to_pandas.py module. Th
 
 <p align="center">
   <div align="center">Table 1: Server DataFrame Head</div>
-  <table border="1" class="dataframe">
+  <table border="1" class="dataframe" align="center">
     <thead>
       <tr style="text-align: right;">
         <th></th>
