@@ -11,11 +11,11 @@ and collected into a DataFrame. Subsequent data analysis on the respective DataF
 
 <p align="center">
   <img src="/images/hist.png" alt="Histogram" style="height:auto; width:400px;"/>
+  <div align="center">Figure 1: Histogram Representation</div>
 </p>
-<div align="center">Figure 1: Histogram Representation</div>
-
+<br>
 
 <p align="center">
   <img src="/images/bar.png" alt="Barchart" style="height:auto; width:400px;"/>
+  <div align="center">Figure 2: Bar Chart Representation</div>
 </p>
-<div align="center">Figure 2: Bar Chart Representation</div>
