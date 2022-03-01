@@ -17,5 +17,5 @@ and collected into a DataFrame. Subsequent data analysis on the respective DataF
 
 <div align="center">Chart 2: Bar Plot Representation</div>
 <p align="center">
-  <img src="/images/funct_calls.png" alt="Barchart" style="height:auto; width:400px;"/>
+  <img src="/images/bar.png" alt="Barchart" style="height:auto; width:400px;"/>
 </p>
